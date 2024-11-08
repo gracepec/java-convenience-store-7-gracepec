@@ -1,18 +1,30 @@
 package store.service;
 
 import store.model.Order;
-import store.validator.StoreValidator;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class OrderService {
-    public Order create(String orderString) {
+    public Order create(String userOrder) {
+        Map<String, Integer> itemMap = new HashMap<>();
 
-        return parseOrder(orderString);
+        for (String item : splitItems(userOrder)) {
+            String[] productAndQuantity = splitDash(item);
+            itemMap.put(productAndQuantity[0], Integer.parseInt(productAndQuantity[1]));
+        }
+
+        return new Order(itemMap);
     }
 
+    private List<String> splitItems(String userOrder) {
+        userOrder = userOrder.substring(1, userOrder.length() - 1); // 양 끝 대괄호 제거
 
-    private Order parseOrder(String orderString) {
-        // 문자열을 Order 객체로 파싱하는 로직 구현
-        // 예시: "사이다-2,감자칩-1" -> Order 객체 생성
-        return new Order(orderString);
+        return List.of(userOrder.split("\\],\\["));
+    }
+
+    private String[] splitDash(String item) {
+        return item.split("-");
     }
 }
