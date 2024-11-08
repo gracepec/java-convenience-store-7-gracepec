@@ -4,6 +4,7 @@ import store.controller.OrderController;
 import store.controller.StoreController;
 import store.service.OrderService;
 import store.service.StoreService;
+import store.view.OutputView;
 
 public class Application {
     public static void main(String[] args) {
@@ -11,6 +12,8 @@ public class Application {
         StoreService storeService = new StoreService();
         OrderController orderController = new OrderController();
         StoreController storeController = new StoreController(storeService);
+
+        OutputView.printWelcome();
 
         storeController.printStoreProducts();
 

@@ -43,7 +43,7 @@ public class Product {
 
     private void appendQuantity(StringBuilder stringBuilder) {
         if (quantity == 0) {
-            stringBuilder.append(" 재고 없음");
+            stringBuilder.append("재고 없음");
             return;
         }
         stringBuilder.append(quantity).append("개");
