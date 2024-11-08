@@ -1,6 +1,8 @@
 package store.controller;
 
+import store.model.Order;
 import store.service.InputService;
+import store.service.OrderService;
 import store.service.StoreService;
 
 public class StoreController {
@@ -13,7 +15,8 @@ public class StoreController {
     }
 
     public void run() {
-        String order = inputService.readUserOrder();
+        String userOrder = inputService.readUserOrder();
+        Order order = OrderService.create(userOrder);
 
         if (storeService.checkPromotionQuantityRemaining(order)) {
             String answer = inputService.readPromotionConfirm();
