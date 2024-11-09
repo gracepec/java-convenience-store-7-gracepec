@@ -1,24 +1,23 @@
 package store.controller;
 
-import store.model.Order;
 import store.service.OrderService;
+import store.service.StoreService;
 import store.validator.OrderValidator;
 import store.validator.StoreValidator;
 import store.view.InputView;
 import store.util.InputUtil;
 
 public class OrderController {
-    public Order getUserOrder(OrderService orderService) {
-        return InputUtil.doLoop(() -> {
+    public void processUserOrder(OrderService orderService, StoreService storeService) {
+        InputUtil.doLoop(() -> {
             String userOrder = InputView.readUserOrder();
             OrderValidator.orderFormat(userOrder);
 
-            Order order = orderService.create(userOrder);
+            orderService.create(userOrder);
 
-//            StoreValidator.isStoreProduct(order);
-//            StoreValidator.isProductRemaining(order);
+            StoreValidator.checkOrderProduct(orderService, storeService);
 
-            return order;
+            return null;
         });
     }
 }

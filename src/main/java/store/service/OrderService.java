@@ -7,7 +7,13 @@ import java.util.List;
 import java.util.Map;
 
 public class OrderService {
-    public Order create(String userOrder) {
+    private Order order;
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void create(String userOrder) {
         Map<String, Integer> itemMap = new HashMap<>();
 
         for (String item : splitItems(userOrder)) {
@@ -15,7 +21,7 @@ public class OrderService {
             itemMap.put(productAndQuantity[0], Integer.parseInt(productAndQuantity[1]));
         }
 
-        return new Order(itemMap);
+        order = new Order(itemMap);
     }
 
     private List<String> splitItems(String userOrder) {

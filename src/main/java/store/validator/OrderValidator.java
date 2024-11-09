@@ -4,20 +4,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class OrderValidator {
-    private static final String ORDER_PATTERN = "^(\\[[가-힣a-zA-Z]+-\\d+\\])(,\\s*\\[[가-힣a-zA-Z]+-\\d+\\])*$";
+    private static final String ORDER_PATTERN = "^(\\[[가-힣a-zA-Z]+-\\d+\\])(,\\[[가-힣a-zA-Z]+-\\d+\\])*$";
 
     public static void orderFormat(String userOrder) {
         validateNull(userOrder);
         validatePattern(userOrder);
-        validateQuantityInt(userOrder);
-    }
-
-    private static void validatePattern(String userOrder) {
-        Pattern pattern = Pattern.compile(ORDER_PATTERN);
-        Matcher matcher = pattern.matcher(userOrder);
-        if (!matcher.matches()) {
-            throw new IllegalArgumentException("[Error] [상품명-수량],[상품명-수량] 형식으로 입력해 주세요.");
-        }
     }
 
     private static void validateNull(String userOrder) {
@@ -26,9 +17,11 @@ public class OrderValidator {
         }
     }
 
-    private static void validateQuantityInt(String userOrder) {
-        if (userOrder == null || !userOrder.matches("\\d+")) {
-            throw new IllegalArgumentException("[Error] 수량은 숫자로 입력해 주세요.");
+    private static void validatePattern(String userOrder) {
+        Pattern pattern = Pattern.compile(ORDER_PATTERN);
+        Matcher matcher = pattern.matcher(userOrder);
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
         }
     }
 }

@@ -14,12 +14,12 @@ public class Application {
         StoreController storeController = new StoreController(storeService);
 
         OutputView.printWelcome();
-
         storeController.printStoreProducts();
 
-        orderController.getUserOrder(orderService);
+        orderController.processUserOrder(orderService, storeService);
 
-//
+    }
+
 //    public void run() {
 //        String userOrder = inputService.readUserOrder();
 //        Order order = OrderService.create(userOrder);
@@ -28,5 +28,4 @@ public class Application {
 //            String answer = inputService.readPromotionConfirm();
 //        }
 //    }
-    }
 }
