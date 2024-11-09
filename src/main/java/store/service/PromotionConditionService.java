@@ -8,7 +8,10 @@ import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
 
 public class PromotionConditionService {
     private final OrderService orderService;
@@ -16,6 +19,7 @@ public class PromotionConditionService {
     private final PromotionService promotionService;
 
     private final List<String> getMore = new ArrayList<>();
+    private final Map<String, Integer> withoutPromotion = new HashMap<>();
 
     public PromotionConditionService(OrderService orderService, StoreService storeService, PromotionService promotionService) {
         this.orderService = orderService;
@@ -36,6 +40,33 @@ public class PromotionConditionService {
         return getMore;
     }
 
+    public Set<String> itemsWithoutPromotion() {
+        Map<String, Integer> orderItems = orderService.getOrder().getItems();
+        List<Product> applicableProducts = storeService.getProducts().stream()
+                .filter(product -> orderItems.containsKey(product.getName()))
+                .filter(product -> !product.getPromotion().equals("null"))
+                .filter(product -> orderItems.get(product.getName()) > product.getQuantity())
+                .toList();
+
+        checkWithoutPromotion(applicableProducts);
+
+        return withoutPromotion.keySet();
+    }
+
+    public int quantityWithoutPromotion(String itemName) {
+        return withoutPromotion.get(itemName);
+    }
+
+    private Promotion matchingPromotion(Product item) {
+        String promotionName = item.getPromotion();
+        return promotionService.findPromotionByName(promotionName);
+    }
+
+    private boolean isDateValid(Promotion promotion) {
+        LocalDate today = DateTimes.now().toLocalDate();
+        return !today.isBefore(promotion.getStartDate()) && !today.isAfter(promotion.getEndDate());
+    }
+
     private void checkMore(List<Product> applicableProducts) {
         for (Product item : applicableProducts) {
             Promotion itemPromotion = matchingPromotion(item);
@@ -46,17 +77,17 @@ public class PromotionConditionService {
         }
     }
 
-    private Promotion matchingPromotion(Product item) {
-        String promotionName = item.getPromotion();
-        return promotionService.findPromotionByName(promotionName);
+    private void checkWithoutPromotion(List<Product> applicableProducts) {
+        for (Product item : applicableProducts) {
+            Promotion itemPromotion = matchingPromotion(item);
+
+            if (!isDateValid(itemPromotion) || !isPromotionInsufficient(item)) {
+                return;
+            }
+        }
     }
 
-    public boolean isDateValid(Promotion promotion) {
-        LocalDate today = DateTimes.now().toLocalDate();
-        return !today.isBefore(promotion.getStartDate()) && !today.isAfter(promotion.getEndDate());
-    }
-
-    public boolean isPromotionRemaining(Product item, Promotion itemPromotion) {
+    private boolean isPromotionRemaining(Product item, Promotion itemPromotion) {
         int userQuantity = orderService.getOrder().getQuantity(item.getName());
         int typePromotion = itemPromotion.getBuyQuantity();
 
@@ -66,16 +97,17 @@ public class PromotionConditionService {
         }
 
         return false;
+    }
 
-//        if (itemPromotion.getBuyQuantity() == 1) {
-//           if (userQuantity%2 == 1 && remaining >= 1) {
-//               getMore.add(item.getName());
-//           }
-//        }
-//        if (itemPromotion.getBuyQuantity() == 2) {
-//            if (userQuantity%3 == 2 && remaining >= 1) {
-//                getMore.add(item.getName());
-//            }
-//        }
+    private boolean isPromotionInsufficient(Product item) {
+        int userQuantity = orderService.getOrder().getQuantity(item.getName());
+        int storeQuantity = item.getQuantity();
+
+        if (userQuantity > storeQuantity) {
+            withoutPromotion.put(item.getName(), userQuantity - storeQuantity);
+            return true;
+        }
+
+        return false;
     }
 }

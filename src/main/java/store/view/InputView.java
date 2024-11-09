@@ -19,9 +19,8 @@ public class InputView {
         return Console.readLine();
     }
 
-    public String readPromotionUnavailable() {
-        System.out.println(PROMOTION_UNAVAILABLE_PROMPT);
-
+    public static String readPromotionUnavailable(String itemName, int quantity) {
+        System.out.println(String.format(PROMOTION_UNAVAILABLE_PROMPT, itemName, quantity));
         return Console.readLine();
     }
 }
