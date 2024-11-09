@@ -11,8 +11,8 @@ public class StoreController {
     }
 
     public void printStoreProducts() {
-        String fileName = "products.md";
-        storeService.loadProductsFromResourceFile(fileName);
+        String productFileName = "products.md";
+        storeService.loadProductsFromFile(productFileName);
 
         OutputView.printProductList(storeService.getProducts());
     }

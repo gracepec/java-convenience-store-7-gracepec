@@ -18,7 +18,7 @@ public class StoreService {
         return products;
     }
 
-    public void loadProductsFromResourceFile(String fileName) {
+    public void loadProductsFromFile(String fileName) {
         try (
                 InputStream inputStream = StoreController.class.getClassLoader().getResourceAsStream(fileName);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))

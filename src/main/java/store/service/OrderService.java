@@ -24,6 +24,10 @@ public class OrderService {
         order = new Order(itemMap);
     }
 
+    public void plusOne(String itemName) {
+        order.addQuantity(itemName, 1);
+    }
+
     private List<String> splitItems(String userOrder) {
         userOrder = userOrder.substring(1, userOrder.length() - 1); // 양 끝 대괄호 제거
 
