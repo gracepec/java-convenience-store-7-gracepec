@@ -12,8 +12,8 @@ public class OrderValidator {
     }
 
     private static void validateNull(String userOrder) {
-        if (userOrder == null || userOrder.trim().isEmpty()) {
-            throw new IllegalArgumentException("[Error] 사용자의 입력이 비어 있습니다.");
+        if (userOrder == null || userOrder.isBlank()) {
+            throw new IllegalArgumentException("[ERROR] 사용자의 입력이 비어 있습니다.");
         }
     }
 

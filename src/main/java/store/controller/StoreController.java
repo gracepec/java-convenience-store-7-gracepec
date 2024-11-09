@@ -10,7 +10,9 @@ public class StoreController {
         this.storeService = storeService1;
     }
 
-    public void printStoreProducts() {
+    public void welcomeStorePrintProducts() {
+        OutputView.printWelcome();
+
         String productFileName = "products.md";
         storeService.loadProductsFromFile(productFileName);
 
