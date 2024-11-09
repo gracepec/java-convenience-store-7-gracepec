@@ -23,4 +23,9 @@ public class InputView {
         System.out.println(String.format(PROMOTION_UNAVAILABLE_PROMPT, itemName, quantity));
         return Console.readLine();
     }
+
+    public static String readMembershipUsed() {
+        System.out.println(MEMBERSHIP_PROMPT);
+        return Console.readLine();
+    }
 }
