@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Order {
-    private Map<String, Integer> items;
+    private final Map<String, Integer> items;
 
     public Order(Map<String, Integer> items) {
         this.items = new HashMap<>(items);

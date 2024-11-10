@@ -33,6 +33,7 @@ public class StoreService {
 
     private void readFileLines(BufferedReader reader) {
         try {
+            products.clear();
             String line;
             reader.readLine();
             while ((line = reader.readLine()) != null) {
