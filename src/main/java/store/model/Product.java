@@ -4,7 +4,7 @@ public class Product {
     private final String name;
     private final int price;
     private int quantity;
-    private String promotion;
+    private final String promotion;
 
     public Product(String name, int price, int quantity, String promotion) {
         this.name = name;
@@ -23,6 +23,14 @@ public class Product {
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public void addQuantity() {
+        quantity++;
     }
 
     public String getPromotion() {

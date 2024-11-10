@@ -18,20 +18,7 @@ public class Order {
         return items.getOrDefault(product, 0);
     }
 
-    public void setQuantity(String product, int quantity) {
-        items.put(product, quantity);
-    }
-
     public void addQuantity(String product, int quantity) {
         items.put(product, getQuantity(product) + quantity);
-    }
-
-    public void removeQuantity(String product, int quantity) {
-        int currentQuantity = getQuantity(product);
-        if (currentQuantity >= quantity) {
-            items.put(product, currentQuantity - quantity);
-        } else {
-            items.remove(product);
-        }
     }
 }

@@ -9,13 +9,16 @@ public class MainController {
     private final StoreController storeController;
     private final PromotionController promotionController;
     private final MembershipController membershipController;
+    private final ReceiptController receiptController;
 
     public MainController(OrderController orderController, StoreController storeController,
-                          PromotionController promotionController, MembershipController membershipController) {
+                          PromotionController promotionController, MembershipController membershipController,
+                          ReceiptController receiptController) {
         this.orderController = orderController;
         this.storeController = storeController;
         this.promotionController = promotionController;
         this.membershipController = membershipController;
+        this.receiptController = receiptController;
     }
 
     public void start() {
@@ -26,6 +29,7 @@ public class MainController {
             orderController.processUserOrder();
             promotionController.processPromotion();
             membershipController.processMembership();
+            receiptController.printReceipt();
 
             continueOrdering = askAnythingElse();
         }

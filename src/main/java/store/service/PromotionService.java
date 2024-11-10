@@ -1,6 +1,7 @@
 package store.service;
 
 import store.controller.StoreController;
+import store.model.Product;
 import store.model.Promotion;
 
 import java.io.BufferedReader;
@@ -12,11 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PromotionService {
-    private List<Promotion> promotions = new ArrayList<>();
-
-    public List<Promotion> getPromotions() {
-        return promotions;
-    }
+    private final List<Promotion> promotions = new ArrayList<>();
+    private List<Product> userOrderPromotionItems = new ArrayList<>();
 
     public void loadPromotionsFromFile(String fileName) {
         try (
@@ -58,5 +56,21 @@ public class PromotionService {
                 .filter(promotion -> promotion.getName().equals(promotionName))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public void checkUserPromotion(PromotionConditionService promotionConditionService) {
+        userOrderPromotionItems = promotionConditionService.promotionProductsInOrder();
+    }
+
+    public List<Product> getPromotionItems() {
+        return userOrderPromotionItems;
+    }
+
+    public int getPromotionDiscount() {
+        int discountAmount = 0;
+        for (Product product : userOrderPromotionItems) {
+            discountAmount = product.getQuantity() * product.getPrice();
+        }
+        return -1 * discountAmount;
     }
 }

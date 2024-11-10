@@ -25,10 +25,6 @@ public class Promotion {
         return buy;
     }
 
-    public int getGetQuantity() {
-        return get;
-    }
-
     public LocalDate getStartDate() {
         return startDate;
     }

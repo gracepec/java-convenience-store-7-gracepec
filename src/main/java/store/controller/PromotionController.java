@@ -1,8 +1,6 @@
 package store.controller;
 
-import store.service.OrderService;
-import store.service.PromotionConditionService;
-import store.service.PromotionService;
+import store.service.*;
 import store.util.InputUtil;
 import store.validator.InputValidator;
 import store.view.InputView;
@@ -10,16 +8,17 @@ import store.view.InputView;
 public class PromotionController {
     private final PromotionService promotionService;
     private final PromotionConditionService promotionConditionService;
-    private final OrderService orderService;
+    private final OrderProductsService orderProductsService;
 
-    public PromotionController(PromotionService promotionService, PromotionConditionService promotionConditionService, OrderService orderService) {
+    public PromotionController(PromotionService promotionService, PromotionConditionService promotionConditionService, OrderProductsService orderProductsService) {
         this.promotionService = promotionService;
         this.promotionConditionService = promotionConditionService;
-        this.orderService = orderService;
+        this.orderProductsService = orderProductsService;
     }
 
     public void processPromotion() {
         promotionService.loadPromotionsFromFile("promotions.md");
+        promotionService.checkUserPromotion(promotionConditionService);
 
         for (String itemName : promotionConditionService.canGetMoreItems()) {
             offerFreeItemToUser(itemName);
@@ -36,7 +35,8 @@ public class PromotionController {
             InputValidator.OnlyYesOrNo(answer);
 
             if (answer.equals("Y")) {
-                orderService.plusOne(itemName);
+//                orderService.plusOne(itemName);
+                orderProductsService.plusOne(itemName);
             }
 
             return null;

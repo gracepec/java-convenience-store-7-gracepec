@@ -57,6 +57,38 @@ public class PromotionConditionService {
         return withoutPromotion.get(itemName);
     }
 
+    public List<Product> promotionProductsInOrder() {
+        return filterValid(storeService.getProducts().stream()
+                .filter(product -> orderService.getOrder().getItems().containsKey(product.getName()))
+                .filter(product -> !product.getPromotion().equals("null"))
+                .toList()
+        );
+    }
+
+    private List<Product> filterValid(List<Product> promotionProductsInOrder) {
+        for (Product item : promotionProductsInOrder) {
+            Promotion itemPromotion = matchingPromotion(item);
+
+            if (!isDateValid(itemPromotion)) {
+                promotionProductsInOrder.remove(item);
+            }
+
+            int appliedPromotion = appliedPromotionCount(item.getQuantity(),
+                    orderService.getOrder().getQuantity(item.getName()), itemPromotion.getBuyQuantity());
+            withoutPromotion.replace(item.getName(), appliedPromotion);
+//            item.setQuantity(appliedPromotionCount(item.getQuantity(), orderService.getOrder().getQuantity(item.getName())
+//                    , itemPromotion.getBuyQuantity()));
+        }
+        return promotionProductsInOrder;
+    }
+
+    private int appliedPromotionCount(int storeQuantity, int userQuantity, int typePromotion) {
+        if (userQuantity <= storeQuantity) {
+            return userQuantity / (typePromotion + 1);
+        }
+        return storeQuantity / (typePromotion + 1);
+    }
+
     private Promotion matchingPromotion(Product item) {
         String promotionName = item.getPromotion();
         return promotionService.findPromotionByName(promotionName);
@@ -91,7 +123,7 @@ public class PromotionConditionService {
         int userQuantity = orderService.getOrder().getQuantity(item.getName());
         int typePromotion = itemPromotion.getBuyQuantity();
 
-        if (userQuantity % typePromotion + 1 == typePromotion) {
+        if (userQuantity % (typePromotion + 1) == typePromotion) {
             getMore.add(item.getName());
             return true;
         }
