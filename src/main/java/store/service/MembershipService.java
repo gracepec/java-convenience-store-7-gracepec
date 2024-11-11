@@ -33,7 +33,7 @@ public class MembershipService {
         for (Product product : promotionService.getPromotionItems()) {
             Promotion promotion = promotionService.findPromotionByName(product.getPromotion());
             int promotionTypeNumber = promotion.getBuyQuantity();
-            afterTotal -= product.getQuantity() * (promotionTypeNumber+1) * product.getPrice();
+            afterTotal -= product.getQuantity() * (promotionTypeNumber + 1) * product.getPrice();
         }
         int calculatedDiscount = (int) (-1 * afterTotal * 0.3);
 

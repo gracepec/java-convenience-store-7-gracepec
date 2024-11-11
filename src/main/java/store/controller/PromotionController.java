@@ -1,9 +1,11 @@
 package store.controller;
 
-import store.service.*;
 import store.util.InputUtil;
-import store.validator.InputValidator;
 import store.view.InputView;
+import store.validator.InputValidator;
+import store.service.PromotionService;
+import store.service.OrderProductsService;
+import store.service.PromotionConditionService;
 
 public class PromotionController {
     private final PromotionService promotionService;
@@ -18,7 +20,7 @@ public class PromotionController {
 
     public void processPromotion() {
         promotionService.loadPromotionsFromFile("promotions.md");
-        promotionService.checkUserPromotion(promotionConditionService,promotionService);
+        promotionService.checkUserPromotion(promotionConditionService, promotionService);
 
         for (String itemName : promotionConditionService.canGetMoreItems()) {
             offerFreeItemToUser(itemName);
@@ -55,5 +57,4 @@ public class PromotionController {
             return null;
         });
     }
-
 }

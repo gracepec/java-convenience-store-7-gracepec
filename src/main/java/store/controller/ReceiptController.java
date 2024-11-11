@@ -1,10 +1,10 @@
 package store.controller;
 
-import store.service.MembershipService;
-import store.service.OrderProductsService;
+import store.view.OutputView;
 import store.service.PaymentService;
 import store.service.PromotionService;
-import store.view.OutputView;
+import store.service.MembershipService;
+import store.service.OrderProductsService;
 
 public class ReceiptController {
     private final PromotionService promotionService;

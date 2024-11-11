@@ -1,8 +1,8 @@
 package store.controller;
 
-import store.service.OrderProductsService;
-import store.service.StoreService;
 import store.view.OutputView;
+import store.service.StoreService;
+import store.service.OrderProductsService;
 
 public class StoreController {
     private final StoreService storeService;

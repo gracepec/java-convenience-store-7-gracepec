@@ -10,7 +10,7 @@ import java.util.Map;
 public class StoreValidator {
     public static void checkOrderProduct(OrderService orderService, StoreService storeService) {
         List<Product> products = storeService.getProducts();
-        Map<String, Integer> orderItems = orderService.getOrder().getItems();
+        Map<String, Integer> orderItems = orderService.getOrder().items();
 
         checkProductName(products, orderItems);
         checkProductRemaining(products, orderItems);
@@ -21,7 +21,7 @@ public class StoreValidator {
             boolean productExists = products.stream()
                     .anyMatch(product -> product.getName().equals(productName));
             if (!productExists) {
-                throw new IllegalArgumentException("[Error] 존재하지 않는 상품입니다. 다시 입력해 주세요.");
+                throw new IllegalArgumentException("[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.");
             }
         }
     }

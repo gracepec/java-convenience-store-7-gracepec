@@ -6,7 +6,11 @@ import store.model.Promotion;
 import camp.nextstep.edu.missionutils.DateTimes;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public class PromotionConditionService {
@@ -27,7 +31,7 @@ public class PromotionConditionService {
         withoutPromotion.clear();
         return filterValid(storeService.getProducts().stream()
                 .map(Product::new)
-                .filter(product -> orderService.getOrder().getItems().containsKey(product.getName()))
+                .filter(product -> orderService.getOrder().items().containsKey(product.getName()))
                 .filter(product -> !product.getPromotion().equals("null"))
                 .toList()
         );
@@ -36,13 +40,11 @@ public class PromotionConditionService {
     private List<Product> filterValid(List<Product> promotionProductsInOrder) {
         for (Product item : promotionProductsInOrder) {
             Promotion itemPromotion = matchingPromotion(item);
-
             if (!isDateValid(itemPromotion)) {
                 return promotionProductsInOrder.stream()
                         .filter(product -> !product.getName().equals(item.getName()))
                         .toList();
             }
-
             int appliedPromotion = appliedPromotionCount(item, itemPromotion);
             item.setQuantity(appliedPromotion);
         }
@@ -62,7 +64,7 @@ public class PromotionConditionService {
 
     public List<String> canGetMoreItems() {
         getMore.clear();
-        Map<String, Integer> orderItems = orderService.getOrder().getItems();
+        Map<String, Integer> orderItems = orderService.getOrder().items();
         List<Product> applicableProducts = storeService.getProducts().stream()
                 .map(Product::new)
                 .filter(product -> orderItems.containsKey(product.getName()))
@@ -93,13 +95,13 @@ public class PromotionConditionService {
         if (userQuantity <= storeQuantity) {
             if (userQuantity % (typePromotion + 1) == typePromotion) {
                 getMore.add(item.getName());
-                promotionService.setPromotionItemQuantity(item.getName(), userQuantity / (typePromotion+1));
+                promotionService.setPromotionItemQuantity(item.getName(), userQuantity / (typePromotion + 1));
             }
         }
     }
 
     public Set<String> itemsWithoutPromotion() {
-        Map<String, Integer> orderItems = orderService.getOrder().getItems();
+        Map<String, Integer> orderItems = orderService.getOrder().items();
         List<Product> applicableProducts = storeService.getProducts().stream()
                 .map(Product::new)
                 .filter(product -> orderItems.containsKey(product.getName()))
@@ -128,7 +130,7 @@ public class PromotionConditionService {
         if (userQuantity > storeQuantity) {
             int notApplicablePromotion = storeQuantity % (typePromotion + 1) + userQuantity - storeQuantity;
             withoutPromotion.put(item.getName(), notApplicablePromotion);
-            promotionService.setPromotionItemQuantity(item.getName(), storeQuantity / (typePromotion+1));
+            promotionService.setPromotionItemQuantity(item.getName(), storeQuantity / (typePromotion + 1));
         }
     }
 

@@ -26,7 +26,7 @@ public class OutputView {
             System.out.printf("%-12s\t%-5d\n", promotionItem.getName(), promotionItem.getQuantity());
         }
         System.out.printf(
-                        """
+                """
                         ==============================
                         총구매액\t\t\t%d\t\t%,d
                         행사할인\t\t\t\t\t%,d
