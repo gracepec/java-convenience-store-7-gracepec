@@ -18,14 +18,14 @@ public class PromotionController {
 
     public void processPromotion() {
         promotionService.loadPromotionsFromFile("promotions.md");
-        promotionService.checkUserPromotion(promotionConditionService);
+        promotionService.checkUserPromotion(promotionConditionService,promotionService);
 
         for (String itemName : promotionConditionService.canGetMoreItems()) {
             offerFreeItemToUser(itemName);
         }
 
         for (String itemName : promotionConditionService.itemsWithoutPromotion()) {
-            checkPurchaseWithoutPromotion(itemName, promotionConditionService.quantityWithoutPromotion(itemName));
+            checkPurchaseWithoutPromotion(itemName, promotionConditionService.getQuantityWithoutPromotion(itemName));
         }
     }
 
@@ -35,8 +35,8 @@ public class PromotionController {
             InputValidator.OnlyYesOrNo(answer);
 
             if (answer.equals("Y")) {
-//                orderService.plusOne(itemName);
                 orderProductsService.plusOne(itemName);
+                promotionService.plusOnePromotionItemQuantity(itemName);
             }
 
             return null;
@@ -50,6 +50,9 @@ public class PromotionController {
 
             if (answer.equals("Y")) {
                 // orderService.(itemName); 결과값에 반영
+            }
+            if (answer.equals("N")) {
+
             }
 
             return null;

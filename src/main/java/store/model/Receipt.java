@@ -8,11 +8,11 @@ public class Receipt {
     private int totalQuantity;
     private int totalAmount;
     private int promotionDiscount;
-    private double membershipDiscount;
-    private double finalAmount;
+    private int membershipDiscount;
+    private int finalAmount;
 
     public Receipt(List<Product> items, List<Product> promotionItems, int totalQuantity, int totalAmount,
-                   int promotionDiscount, double membershipDiscount, double finalAmount) {
+                   int promotionDiscount, int membershipDiscount, int finalAmount) {
         this.items = items;
         this.promotionItems = promotionItems;
         this.totalQuantity = totalQuantity;
@@ -42,11 +42,11 @@ public class Receipt {
         return promotionDiscount;
     }
 
-    public double getMembershipDiscount() {
+    public int getMembershipDiscount() {
         return membershipDiscount;
     }
 
-    public double getFinalAmount() {
+    public int getFinalAmount() {
         return finalAmount;
     }
 }

@@ -58,12 +58,26 @@ public class PromotionService {
                 .orElse(null);
     }
 
-    public void checkUserPromotion(PromotionConditionService promotionConditionService) {
+    public void checkUserPromotion(PromotionConditionService promotionConditionService, PromotionService promotionService) {
         userOrderPromotionItems = promotionConditionService.promotionProductsInOrder();
     }
 
     public List<Product> getPromotionItems() {
         return userOrderPromotionItems;
+    }
+
+    public void setPromotionItemQuantity(String item, int promotionAppliedQuantity) {
+        userOrderPromotionItems.stream()
+                .filter(product -> product.getName().equals(item))
+                .findFirst()
+                .ifPresent(product -> product.setQuantity(promotionAppliedQuantity));
+    }
+
+    public void plusOnePromotionItemQuantity(String item) {
+        userOrderPromotionItems.stream()
+                .filter(product -> product.getName().equals(item))
+                .findFirst()
+                .ifPresent(Product::addQuantity);
     }
 
     public int getPromotionDiscount() {

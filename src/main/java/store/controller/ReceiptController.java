@@ -18,19 +18,8 @@ public class ReceiptController {
     }
 
     public void printReceipt() {
-        Receipt receipt = payProcess();
+        paymentService.generate(orderProductsService, promotionService);
 
-        OutputView.printReceipt(receipt);
-    }
-
-    private Receipt payProcess() {
-        int totalQuantity = orderProductsService.getTotalQuantity();
-        int totalAmount = orderProductsService.getTotalPrice();
-        int promotionDiscount = promotionService.getPromotionDiscount();
-        double membershipDiscount = paymentService.membershipDiscount(totalAmount + promotionDiscount);
-        double finalAmount = totalAmount + promotionDiscount + membershipDiscount;
-
-        return new Receipt(orderProductsService.getOrderProducts(), promotionService.getPromotionItems(), totalQuantity, totalAmount,
-                promotionDiscount, membershipDiscount, finalAmount);
+        OutputView.printReceipt(paymentService.getReceipt());
     }
 }

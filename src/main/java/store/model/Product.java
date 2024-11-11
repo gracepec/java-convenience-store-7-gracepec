@@ -2,7 +2,7 @@ package store.model;
 
 public class Product {
     private final String name;
-    private final int price;
+    private int price;
     private int quantity;
     private final String promotion;
 
@@ -13,12 +13,23 @@ public class Product {
         this.promotion = promotion;
     }
 
+    public Product(Product other) {
+        this.name = other.name;
+        this.price = other.price;
+        this.quantity = other.quantity;
+        this.promotion = other.promotion;
+    }
+
     public String getName() {
         return name;
     }
 
     public int getPrice() {
         return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public int getQuantity() {

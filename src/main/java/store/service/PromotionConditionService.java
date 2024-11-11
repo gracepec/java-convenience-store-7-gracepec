@@ -27,39 +27,10 @@ public class PromotionConditionService {
         this.promotionService = promotionService;
     }
 
-    public List<String> canGetMoreItems() {
-        getMore.clear();
-        Map<String, Integer> orderItems = orderService.getOrder().getItems();
-        List<Product> applicableProducts = storeService.getProducts().stream()
-                .filter(product -> orderItems.containsKey(product.getName()))
-                .filter(product -> !product.getPromotion().equals("null"))
-                .toList();
-
-        checkMore(applicableProducts);
-
-        return getMore;
-    }
-
-    public Set<String> itemsWithoutPromotion() {
-        withoutPromotion.clear();
-        Map<String, Integer> orderItems = orderService.getOrder().getItems();
-        List<Product> applicableProducts = storeService.getProducts().stream()
-                .filter(product -> orderItems.containsKey(product.getName()))
-                .filter(product -> !product.getPromotion().equals("null"))
-                .filter(product -> orderItems.get(product.getName()) > product.getQuantity())
-                .toList();
-
-        checkWithoutPromotion(applicableProducts);
-
-        return withoutPromotion.keySet();
-    }
-
-    public int quantityWithoutPromotion(String itemName) {
-        return withoutPromotion.get(itemName);
-    }
-
     public List<Product> promotionProductsInOrder() {
+        withoutPromotion.clear();
         return filterValid(storeService.getProducts().stream()
+                .map(Product::new)
                 .filter(product -> orderService.getOrder().getItems().containsKey(product.getName()))
                 .filter(product -> !product.getPromotion().equals("null"))
                 .toList()
@@ -75,7 +46,9 @@ public class PromotionConditionService {
             }
 
             int appliedPromotion = appliedPromotionCount(item, itemPromotion);
-            withoutPromotion.replace(item.getName(), appliedPromotion);
+            item.setQuantity(appliedPromotion);
+
+//            withoutPromotion.put(item.getName(), appliedPromotion);
         }
         return promotionProductsInOrder;
     }
@@ -91,14 +64,19 @@ public class PromotionConditionService {
         return storeQuantity / (typePromotion + 1);
     }
 
-    private Promotion matchingPromotion(Product item) {
-        String promotionName = item.getPromotion();
-        return promotionService.findPromotionByName(promotionName);
-    }
+    public List<String> canGetMoreItems() {
+        getMore.clear();
+        Map<String, Integer> orderItems = orderService.getOrder().getItems();
+        List<Product> applicableProducts = storeService.getProducts().stream()
+                .map(Product::new)
+                .filter(product -> orderItems.containsKey(product.getName()))
+                .filter(product -> !product.getPromotion().equals("null"))
+                .filter(product -> orderItems.get(product.getName()) < product.getQuantity())
+                .toList();
 
-    private boolean isDateValid(Promotion promotion) {
-        LocalDate today = DateTimes.now().toLocalDate();
-        return !today.isBefore(promotion.getStartDate()) && !today.isAfter(promotion.getEndDate());
+        checkMore(applicableProducts);
+
+        return getMore;
     }
 
     private void checkMore(List<Product> applicableProducts) {
@@ -111,33 +89,39 @@ public class PromotionConditionService {
         }
     }
 
+    private void checkPromotionRemaining(Product item, Promotion itemPromotion) {
+        int userQuantity = orderService.getOrder().getQuantity(item.getName());
+        int storeQuantity = item.getQuantity();
+        int typePromotion = itemPromotion.getBuyQuantity();
+
+        if (userQuantity <= storeQuantity) {
+            if (userQuantity % (typePromotion + 1) == typePromotion) {
+                getMore.add(item.getName());
+                promotionService.setPromotionItemQuantity(item.getName(), userQuantity / (typePromotion+1));
+            }
+        }
+    }
+
+    public Set<String> itemsWithoutPromotion() {
+        Map<String, Integer> orderItems = orderService.getOrder().getItems();
+        List<Product> applicableProducts = storeService.getProducts().stream()
+                .map(Product::new)
+                .filter(product -> orderItems.containsKey(product.getName()))
+                .filter(product -> !product.getPromotion().equals("null"))
+                .filter(product -> orderItems.get(product.getName()) > product.getQuantity())
+                .toList();
+
+        checkWithoutPromotion(applicableProducts);
+
+        return withoutPromotion.keySet();
+    }
+
     private void checkWithoutPromotion(List<Product> applicableProducts) {
         for (Product item : applicableProducts) {
             Promotion itemPromotion = matchingPromotion(item);
 
             if (isDateValid(itemPromotion)) {
                 checkPromotionInsufficient(item, itemPromotion);
-            }
-        }
-    }
-
-    private int getSameNameNoPromotion(Product item) {
-        return storeService.getProducts().stream()
-                .filter(product -> product.getName().equals(item.getName()))
-                .filter(product -> product.getPromotion().equals("null"))
-                .findFirst()
-                .map(Product::getQuantity)
-                .orElse(0);
-    }
-
-    private void checkPromotionRemaining(Product item, Promotion itemPromotion) {
-        int userQuantity = orderService.getOrder().getQuantity(item.getName());
-        int storeQuantity = item.getQuantity();
-        int typePromotion = itemPromotion.getBuyQuantity();
-
-        if (userQuantity < storeQuantity) {
-            if (userQuantity % (typePromotion + 1) == typePromotion) {
-                getMore.add(item.getName());
             }
         }
     }
@@ -150,6 +134,30 @@ public class PromotionConditionService {
         if (userQuantity > storeQuantity) {
             int notApplicablePromotion = storeQuantity % (typePromotion + 1) + userQuantity - storeQuantity;
             withoutPromotion.put(item.getName(), notApplicablePromotion);
+            promotionService.setPromotionItemQuantity(item.getName(), storeQuantity / (typePromotion+1));
         }
+    }
+
+    public int getQuantityWithoutPromotion(String itemName) {
+        return withoutPromotion.get(itemName);
+    }
+
+    private Promotion matchingPromotion(Product item) {
+        String promotionName = item.getPromotion();
+        return promotionService.findPromotionByName(promotionName);
+    }
+
+    private boolean isDateValid(Promotion promotion) {
+        LocalDate today = DateTimes.now().toLocalDate();
+        return !today.isBefore(promotion.getStartDate()) && !today.isAfter(promotion.getEndDate());
+    }
+
+    private int getSameNameNoPromotion(Product item) {
+        return storeService.getProducts().stream()
+                .filter(product -> product.getName().equals(item.getName()))
+                .filter(product -> product.getPromotion().equals("null"))
+                .findFirst()
+                .map(Product::getQuantity)
+                .orElse(0);
     }
 }

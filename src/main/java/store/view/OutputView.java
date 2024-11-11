@@ -31,23 +31,21 @@ public class OutputView {
     }
 
     public static void printReceipt(Receipt receipt) {
-        System.out.println("===========W 편의점=============");
-        System.out.println("상품명\t\t수량\t금액");
+        System.out.println("===========W 편의점=============\n" + "상품명\t\t\t수량\t\t금액");
         for (Product item : receipt.getItems()) {
-            System.out.printf("%-10s\t\t%-5d\t%,10d%n", item.getName(), item.getQuantity(), item.getPrice()); // 실제 데이터를 반영해야 함
+            System.out.printf("%-10s\t\t%-5d\t%,d%n", item.getName(), item.getQuantity(), item.getPrice()); // 실제 데이터를 반영해야 함
         }
         System.out.println("===========증\t정=============");
         for (Product promotionItem : receipt.getPromotionItems()) {
             System.out.printf("%-10s\t\t%-5d\n", promotionItem.getName(), promotionItem.getQuantity());
         }
-        System.out.println("==============================");
-
         System.out.printf(
-                """
-                        총구매액\t\t%d\t%,10d
-                        행사할인\t\t\t%s
-                        멤버십할인\t\t\t%s
-                        내실돈\t\t\t%s
+                        """
+                        ==============================\n
+                        총구매액\t\t\t%d\t\t%,d
+                        행사할인\t\t\t\t\t%,d
+                        멤버십할인\t\t\t\t\t%,d
+                        내실돈\t\t\t\t\t%,d
                         """,
                 receipt.getTotalQuantity(), receipt.getTotalAmount(), receipt.getPromotionDiscount(),
                 receipt.getMembershipDiscount(), receipt.getFinalAmount()

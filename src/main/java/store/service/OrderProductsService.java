@@ -31,9 +31,9 @@ public class OrderProductsService {
     }
 
     public void takeOrder(String userOrder) {
+        orderProducts.clear();
         for (String item : splitItems(userOrder)) {
             String[] productAndQuantity = splitDash(item);
-
             String productName = productAndQuantity[0];
             int quantity = Integer.parseInt(productAndQuantity[1]);
             int price = getPrice(productName);
@@ -52,12 +52,12 @@ public class OrderProductsService {
     }
 
     public void plusOne(String itemName) {
-        Product item = orderProducts.stream()
+        orderProducts.stream()
                 .filter(product -> product.getName().equals(itemName))
                 .findFirst()
-                .orElse(null);
+                .ifPresent(Product::addQuantity);
 
-        item.addQuantity();
+//        item.addQuantity();
     }
 
     private int getPrice(String productName) {
