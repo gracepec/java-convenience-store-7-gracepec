@@ -45,6 +45,6 @@ public class MembershipService {
             return -8000;
         }
 
-        return -calculatedDiscount;
+        return calculatedDiscount;
     }
 }

@@ -6,11 +6,7 @@ import store.model.Promotion;
 import camp.nextstep.edu.missionutils.DateTimes;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 public class PromotionConditionService {
@@ -19,7 +15,7 @@ public class PromotionConditionService {
     private final PromotionService promotionService;
 
     private final List<String> getMore = new ArrayList<>();
-    private final Map<String, Integer> withoutPromotion = new HashMap<>();
+    private final Map<String, Integer> withoutPromotion = new LinkedHashMap<>();
 
     public PromotionConditionService(OrderService orderService, StoreService storeService, PromotionService promotionService) {
         this.orderService = orderService;

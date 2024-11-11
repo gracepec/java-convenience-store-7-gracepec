@@ -19,7 +19,7 @@ public class DIContainer {
     private static final PromotionConditionService promotionConditionService = new PromotionConditionService(orderService, storeService, promotionService);
 
     private static final OrderController orderController = new OrderController(orderService, storeService, orderProductsService);
-    private static final StoreController storeController = new StoreController(storeService);
+    private static final StoreController storeController = new StoreController(storeService, orderProductsService);
     private static final PromotionController promotionController = new PromotionController(promotionService, promotionConditionService, orderProductsService);
     private static final MembershipController membershipController = new MembershipController(membershipService);
     private static final ReceiptController receiptController = new ReceiptController(promotionService, orderProductsService, paymentService, membershipService);

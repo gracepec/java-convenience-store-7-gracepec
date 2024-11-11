@@ -14,7 +14,7 @@ public class PaymentService {
 
     public void generate(OrderProductsService orderProductsService, PromotionService promotionService, MembershipService membershipService) {
         List<Product> orderItems = eachSumAmount(orderProductsService.getOrderProducts());
-        List<Product> promotionItems = promotionService.getPromotionItems();
+        List<Product> promotionItems = promotionService.getPromotionItems().stream().filter(product -> product.getQuantity() > 0).toList();
         int totalQuantity = orderProductsService.getTotalQuantity();
         int totalAmount = orderProductsService.getTotalPrice();
         int promotionDiscount = promotionService.getDiscount();

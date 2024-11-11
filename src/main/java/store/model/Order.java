@@ -17,8 +17,4 @@ public class Order {
     public int getQuantity(String product) {
         return items.getOrDefault(product, 0);
     }
-
-    public void addQuantity(String product, int quantity) {
-        items.put(product, getQuantity(product) + quantity);
-    }
 }

@@ -56,7 +56,8 @@ public class Product {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append("- ").append(name).append(" ").append(price).append("원 ");
+        String formattedPrice = String.format("%,d", price);
+        stringBuilder.append("- ").append(name).append(" ").append(formattedPrice).append("원 ");
 
         appendQuantity(stringBuilder);
         appendPromotion(stringBuilder);

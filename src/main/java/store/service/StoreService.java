@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class StoreService {
-    private final List<Product> products = new ArrayList<>();
+    private List<Product> products = new ArrayList<>();
 
     public List<Product> getProducts() {
         return products;
@@ -29,6 +29,32 @@ public class StoreService {
         } catch (IOException e) {
             throw new IllegalStateException("파일 읽기 중 오류 발생");
         }
+    }
+
+    public void updateProducts(OrderProductsService orderProductsService) {
+        for (Product item : orderProductsService.getOrderProducts()) {
+            findReduceProducts(item);
+        }
+    }
+
+    private void findReduceProducts(Product item) {
+        int remainingItemQuantity = item.getQuantity();
+
+        for (Product product : products) {
+            if (product.getName().equals(item.getName())) {
+                remainingItemQuantity = checkPromotionQuantityEnough(product, remainingItemQuantity);
+            }
+        }
+    }
+
+    private int checkPromotionQuantityEnough(Product product, int remaining) {
+        if (product.getQuantity() >= remaining) {
+            product.setQuantity(product.getQuantity() - remaining);
+            return 0;
+        }
+
+        product.setQuantity(0);
+        return remaining - product.getQuantity();
     }
 
     private void readFileLines(BufferedReader reader) {
