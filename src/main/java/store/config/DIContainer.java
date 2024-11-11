@@ -10,21 +10,21 @@ import store.controller.ReceiptController;
 import store.service.*;
 
 public class DIContainer {
-    private static final OrderService orderService = new OrderService();
-    private static final StoreService storeService = new StoreService();
-    private static final PaymentService paymentService = new PaymentService();
-    private static final PromotionService promotionService = new PromotionService();
-    private static final MembershipService membershipService = new MembershipService();
-    private static final OrderProductsService orderProductsService = new OrderProductsService();
-    private static final PromotionConditionService promotionConditionService = new PromotionConditionService(orderService, storeService, promotionService);
-
-    private static final OrderController orderController = new OrderController(orderService, storeService, orderProductsService);
-    private static final StoreController storeController = new StoreController(storeService, orderProductsService);
-    private static final PromotionController promotionController = new PromotionController(promotionService, promotionConditionService, orderProductsService);
-    private static final MembershipController membershipController = new MembershipController(membershipService);
-    private static final ReceiptController receiptController = new ReceiptController(promotionService, orderProductsService, paymentService, membershipService);
-
     public static MainController createMainController() {
+        OrderService orderService = new OrderService();
+        StoreService storeService = new StoreService();
+        PaymentService paymentService = new PaymentService();
+        PromotionService promotionService = new PromotionService();
+        MembershipService membershipService = new MembershipService();
+        OrderProductsService orderProductsService = new OrderProductsService();
+        PromotionConditionService promotionConditionService = new PromotionConditionService(orderService, storeService, promotionService);
+
+        OrderController orderController = new OrderController(orderService, storeService, orderProductsService);
+        StoreController storeController = new StoreController(storeService, orderProductsService);
+        PromotionController promotionController = new PromotionController(promotionService, promotionConditionService, orderProductsService);
+        MembershipController membershipController = new MembershipController(membershipService);
+        ReceiptController receiptController = new ReceiptController(promotionService, orderProductsService, paymentService, membershipService);
+
         return new MainController(orderController, storeController, promotionController, membershipController, receiptController);
     }
 }

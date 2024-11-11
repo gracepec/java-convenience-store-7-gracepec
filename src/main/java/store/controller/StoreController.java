@@ -7,6 +7,7 @@ import store.view.OutputView;
 public class StoreController {
     private final StoreService storeService;
     private final OrderProductsService orderProductsService;
+    private boolean isFirstLoad = true;
 
     public StoreController(StoreService storeService1, OrderProductsService orderProductsService) {
         this.storeService = storeService1;
@@ -16,16 +17,13 @@ public class StoreController {
     public void welcomeStorePrintProducts() {
         OutputView.printWelcome();
 
-        updateStoreProducts();
+        if (isFirstLoad) {
+            storeService.loadProductsFromFile("products.md");
+            isFirstLoad = false;
+        } else {
+            storeService.updateProducts(orderProductsService);
+        }
 
         OutputView.printProductList(storeService.getProducts());
-    }
-
-    public void updateStoreProducts() {
-        if (storeService.getProducts().isEmpty()) {
-            storeService.loadProductsFromFile("products.md");
-            return;
-        }
-        storeService.updateProducts(orderProductsService);
     }
 }
