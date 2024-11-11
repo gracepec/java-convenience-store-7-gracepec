@@ -38,13 +38,13 @@ public class PromotionConditionService {
             Promotion itemPromotion = matchingPromotion(item);
 
             if (!isDateValid(itemPromotion)) {
-                promotionProductsInOrder.remove(item);
+                return promotionProductsInOrder.stream()
+                        .filter(product -> !product.getName().equals(item.getName()))
+                        .toList();
             }
 
             int appliedPromotion = appliedPromotionCount(item, itemPromotion);
             item.setQuantity(appliedPromotion);
-
-//            withoutPromotion.put(item.getName(), appliedPromotion);
         }
         return promotionProductsInOrder;
     }
@@ -116,9 +116,7 @@ public class PromotionConditionService {
         for (Product item : applicableProducts) {
             Promotion itemPromotion = matchingPromotion(item);
 
-            if (isDateValid(itemPromotion)) {
-                checkPromotionInsufficient(item, itemPromotion);
-            }
+            checkPromotionInsufficient(item, itemPromotion);
         }
     }
 
@@ -146,14 +144,5 @@ public class PromotionConditionService {
     private boolean isDateValid(Promotion promotion) {
         LocalDate today = DateTimes.now().toLocalDate();
         return !today.isBefore(promotion.getStartDate()) && !today.isAfter(promotion.getEndDate());
-    }
-
-    private int getSameNameNoPromotion(Product item) {
-        return storeService.getProducts().stream()
-                .filter(product -> product.getName().equals(item.getName()))
-                .filter(product -> product.getPromotion().equals("null"))
-                .findFirst()
-                .map(Product::getQuantity)
-                .orElse(0);
     }
 }
