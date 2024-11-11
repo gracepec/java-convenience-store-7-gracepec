@@ -17,9 +17,7 @@ public class MembershipController {
             String answer = InputView.readMembershipUsed();
             InputValidator.OnlyYesOrNo(answer);
 
-            if (answer.equals("Y")) {
-                membershipService.useMembership();
-            }
+            membershipService.setUse(answer);
 
             return null;
         });

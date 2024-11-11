@@ -48,11 +48,8 @@ public class PromotionController {
             String answer = InputView.readPromotionUnavailable(itemName, quantity);
             InputValidator.OnlyYesOrNo(answer);
 
-            if (answer.equals("Y")) {
-                // orderService.(itemName); 결과값에 반영
-            }
             if (answer.equals("N")) {
-
+                orderProductsService.minus(itemName, quantity);
             }
 
             return null;

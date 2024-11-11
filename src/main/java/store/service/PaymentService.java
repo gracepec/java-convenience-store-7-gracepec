@@ -12,13 +12,13 @@ public class PaymentService {
         return receipt;
     }
 
-    public void generate(OrderProductsService orderProductsService, PromotionService promotionService) {
+    public void generate(OrderProductsService orderProductsService, PromotionService promotionService, MembershipService membershipService) {
         List<Product> orderItems = eachSumAmount(orderProductsService.getOrderProducts());
         List<Product> promotionItems = promotionService.getPromotionItems();
         int totalQuantity = orderProductsService.getTotalQuantity();
         int totalAmount = orderProductsService.getTotalPrice();
-        int promotionDiscount = promotionService.getPromotionDiscount();
-        int membershipDiscount = membershipDiscount(totalAmount + promotionDiscount);
+        int promotionDiscount = promotionService.getDiscount();
+        int membershipDiscount = membershipService.getDiscount(totalAmount, promotionService);
         int finalAmount = totalAmount + promotionDiscount + membershipDiscount;
 
         receipt = new Receipt(orderItems, promotionItems, totalQuantity, totalAmount,
@@ -30,9 +30,5 @@ public class PaymentService {
             item.setPrice(item.getQuantity() * item.getPrice());
         }
         return orderItems;
-    }
-
-    public int membershipDiscount(int afterPromotionDiscount) {
-        return (int) (afterPromotionDiscount * 0.3); //after에 적용 xx
     }
 }

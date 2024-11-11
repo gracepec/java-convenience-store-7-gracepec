@@ -25,7 +25,7 @@ public class OrderController {
             OrderValidator.orderFormat(userOrder);
 
             orderService.create(userOrder);
-            orderProductsService.takeOrder(userOrder);
+            orderProductsService.takeOrder(storeService, userOrder);
 
             StoreValidator.checkOrderProduct(orderService, storeService);
 

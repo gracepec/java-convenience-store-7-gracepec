@@ -80,10 +80,10 @@ public class PromotionService {
                 .ifPresent(Product::addQuantity);
     }
 
-    public int getPromotionDiscount() {
+    public int getDiscount() {
         int discountAmount = 0;
         for (Product product : userOrderPromotionItems) {
-            discountAmount = product.getQuantity() * product.getPrice();
+            discountAmount += product.getQuantity() * product.getPrice();
         }
         return -1 * discountAmount;
     }

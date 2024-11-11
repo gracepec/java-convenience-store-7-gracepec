@@ -44,6 +44,10 @@ public class Product {
         quantity++;
     }
 
+    public void minusQuantity(int minus) {
+        quantity -= minus;
+    }
+
     public String getPromotion() {
         return promotion;
     }
